@@ -7,7 +7,7 @@ Adapted for Khaled Qamhan Portfolio
 
 "use strict";
 
-var$body = document.querySelector('body');
+var $body = document.querySelector('body');
 
 // Play initial animations on page load.
 window.addEventListener('load', function() {
