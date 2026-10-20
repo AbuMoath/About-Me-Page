@@ -119,18 +119,21 @@
             var filter = c.createBiquadFilter();
             var master = c.createGain();
 
-            osc1.type = 'sine'; osc1.frequency.setValueAtTime(58, now);
-            osc2.type = 'sine'; osc2.frequency.setValueAtTime(58 * 1.006, now); // slight detune: a soft beating, not a pitch
+            // Phone/laptop speakers reproduce sub-100Hz very poorly at low gain, so the
+            // fundamental sits around 145Hz (still a warm, low "hum" register, just one
+            // that small speakers can actually move air at).
+            osc1.type = 'sine'; osc1.frequency.setValueAtTime(145, now);
+            osc2.type = 'sine'; osc2.frequency.setValueAtTime(145 * 1.006, now); // slight detune: a soft beating, not a pitch
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(210, now);
+            filter.frequency.setValueAtTime(520, now);
             filter.Q.setValueAtTime(0.6, now);
 
             lfo.type = 'sine'; lfo.frequency.setValueAtTime(0.055, now); // ~18s slow breath
-            lfoGain.gain.setValueAtTime(35, now);
+            lfoGain.gain.setValueAtTime(90, now);
             lfo.connect(lfoGain); lfoGain.connect(filter.frequency);
 
             master.gain.setValueAtTime(0.0001, now);
-            master.gain.linearRampToValueAtTime(0.02, now + 1.4); // gentle fade in, never loud
+            master.gain.linearRampToValueAtTime(0.04, now + 2.2); // slow, gentle fade in — present, never loud
 
             osc1.connect(filter); osc2.connect(filter); filter.connect(master); master.connect(c.destination);
             osc1.start(now); osc2.start(now); lfo.start(now);
@@ -155,7 +158,7 @@
 
         function setBrightness(p) {
             if (!drone || !ctx) return;
-            var target = 190 + Math.max(0, Math.min(1, p)) * 260; // 190Hz..450Hz, a subtle shift
+            var target = 420 + Math.max(0, Math.min(1, p)) * 320; // 420Hz..740Hz, a subtle shift
             try { drone.filter.frequency.linearRampToValueAtTime(target, ctx.currentTime + 0.5); } catch (e) {}
         }
 
@@ -167,13 +170,21 @@
                 btn.setAttribute('aria-pressed', on ? 'true' : 'false');
                 btn.setAttribute('aria-label', on ? 'Turn sound off' : 'Turn sound on');
             }
-            if (on) { startDrone(); tick(260, 0.14, 0.03); } else { stopDrone(); }
+            if (on) { startDrone(); tick(300, 0.16, 0.09); } else { stopDrone(); }
         }
         if (btn) {
             setEnabled(enabled);
-            btn.addEventListener('click', function () {
-                setEnabled(!enabled);
-                haptics.buzz(12);
+            // iOS Safari's audio unlock is strictest about the very first gesture on a
+            // page; resuming on both touchend and click covers tap and click-emulation
+            // paths so the very first toggle reliably unlocks sound on iPhone.
+            ['click', 'touchend'].forEach(function (evt) {
+                btn.addEventListener(evt, function (e) {
+                    if (evt === 'touchend') e.preventDefault();
+                    var c = ensureCtx();
+                    if (c && c.state === 'suspended') { var rp = c.resume(); if (rp && rp.catch) rp.catch(function () {}); }
+                    setEnabled(!enabled);
+                    haptics.buzz(12);
+                });
             });
         }
 
