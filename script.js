@@ -24,9 +24,79 @@
     setTheme(root.getAttribute('data-theme') || 'dark');
     themeBtn.addEventListener('click', function () {
         setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        haptics.buzz(12);
+        sound.hum(260, 0.14, 0.035);
     });
 
     $('#year').textContent = new Date().getFullYear();
+
+    /* ---------- Haptics (mobile vibration) ---------- */
+    var haptics = {
+        last: 0,
+        buzz: function (pattern) {
+            if (!('vibrate' in navigator)) return;
+            var now = performance.now();
+            if (now - this.last < 120) return; // avoid buzzing storms
+            this.last = now;
+            try { navigator.vibrate(pattern); } catch (e) {}
+        }
+    };
+
+    /* ---------- Ambient sound: short synthesized hums, no audio files ----------
+       Off by default (autoplay-safe, and so nobody is surprised); the visitor
+       opts in with the speaker button, which also doubles as the unlock gesture
+       the Web Audio API needs. */
+    var sound = (function () {
+        var ctx = null, enabled = false;
+        try { enabled = localStorage.getItem('sound') === 'on'; } catch (e) {}
+        var btn = $('#soundToggle');
+
+        function ensureCtx() {
+            if (ctx) return ctx;
+            var AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return null;
+            try { ctx = new AC(); } catch (e) { ctx = null; }
+            return ctx;
+        }
+
+        function hum(freq, duration, peak) {
+            if (!enabled) return;
+            var c = ensureCtx();
+            if (!c) return;
+            if (c.state === 'suspended') c.resume();
+            var t0 = c.currentTime;
+            var osc = c.createOscillator();
+            var filter = c.createBiquadFilter();
+            var gain = c.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t0);
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(freq * 3, t0);
+            gain.gain.setValueAtTime(0.0001, t0);
+            gain.gain.linearRampToValueAtTime(peak, t0 + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+            osc.connect(filter); filter.connect(gain); gain.connect(c.destination);
+            osc.start(t0);
+            osc.stop(t0 + duration + 0.03);
+        }
+
+        function setEnabled(on) {
+            enabled = on;
+            try { localStorage.setItem('sound', on ? 'on' : 'off'); } catch (e) {}
+            if (btn) {
+                btn.setAttribute('data-sound', on ? 'on' : 'off');
+                btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+                btn.setAttribute('aria-label', on ? 'Turn sound off' : 'Turn sound on');
+            }
+            if (on) { ensureCtx(); hum(240, 0.18, 0.05); }
+        }
+        if (btn) {
+            setEnabled(enabled);
+            btn.addEventListener('click', function () { setEnabled(!enabled); haptics.buzz(12); });
+        }
+
+        return { hum: hum };
+    })();
 
     /* ---------- Split text into masked words ---------- */
     $$('[data-split]').forEach(function (el) {
@@ -102,12 +172,15 @@
 
     if ('IntersectionObserver' in window) {
         var io = new IntersectionObserver(function (entries) {
+            var any = false;
             entries.forEach(function (e) {
                 if (!e.isIntersecting) return;
                 e.target.classList.add('in');
                 $$('[data-count]', e.target).forEach(runCounter);
                 io.unobserve(e.target);
+                any = true;
             });
+            if (any) { haptics.buzz(8); sound.hum(130, 0.14, 0.022); }
         }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
         $$('[data-reveal]').forEach(function (el) { io.observe(el); });
     } else {
@@ -122,12 +195,20 @@
     var timelineFill = $('#timelineFill');
     var tlItems = $$('.tl-item');
     var parallaxEls = $$('[data-parallax]');
-    var lastY = 0, ticking = false;
+    var lastY = 0, ticking = false, lastQuartile = -1;
 
     function onScroll() {
         var y = window.scrollY || window.pageYOffset;
         var max = document.documentElement.scrollHeight - window.innerHeight;
-        progressBar.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
+        var progress = max > 0 ? y / max : 0;
+        progressBar.style.transform = 'scaleX(' + progress + ')';
+
+        // iOS-style "tick" each quarter of the page, like a progress wheel detent
+        var q = Math.min(Math.floor(progress * 4), 4);
+        if (q !== lastQuartile) {
+            if (q > 0) { haptics.buzz(q === 4 ? [14, 40, 14] : 14); sound.hum(150 + q * 35, 0.12, 0.028); }
+            lastQuartile = q;
+        }
 
         header.classList.toggle('is-scrolled', y > 24);
         var menuOpen = header.classList.contains('is-menu-open');
@@ -165,6 +246,7 @@
     /* ---------- Active nav link ---------- */
     var navLinks = $$('.nav a');
     var sections = navLinks.map(function (a) { return $(a.getAttribute('href')); }).filter(Boolean);
+    var currentSection = null;
     if ('IntersectionObserver' in window) {
         var navIO = new IntersectionObserver(function (entries) {
             entries.forEach(function (e) {
@@ -174,6 +256,11 @@
                     a.classList.toggle('is-active', on);
                     if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
                 });
+                if (currentSection !== e.target.id) {
+                    currentSection = e.target.id;
+                    haptics.buzz(10);
+                    sound.hum(205, 0.11, 0.024);
+                }
             });
         }, { rootMargin: '-45% 0px -50% 0px' });
         sections.forEach(function (s) { navIO.observe(s); });
@@ -188,6 +275,8 @@
         menuBtn.setAttribute('aria-expanded', open);
         menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
         body.style.overflow = open ? 'hidden' : '';
+        haptics.buzz(open ? [12, 30, 12] : 12);
+        sound.hum(open ? 320 : 180, 0.14, 0.03);
     }
     menuBtn.addEventListener('click', function () { setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'); });
     navLinks.forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
@@ -237,6 +326,14 @@
             el.addEventListener('pointerleave', function () { el.style.transform = ''; });
         });
     }
+
+    /* ---------- Tap feedback on buttons and links ---------- */
+    document.addEventListener('click', function (e) {
+        var el = e.target.closest && e.target.closest('.btn, .nav a, .u-link');
+        if (!el || el.id === 'menuBtn' || el === themeBtn || el.id === 'soundToggle') return;
+        haptics.buzz(10);
+        sound.hum(225, 0.1, 0.03);
+    });
 
     /* ---------- Contact form (static site: opens the visitor's mail app) ---------- */
     var form = $('#contactForm');
