@@ -1,180 +1,398 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Khaled Qamhan - Software Engineering Student, Full-Stack Developer & AI Enthusiast">
-    <title>Khaled Qamhan | Full-Stack Developer & AI Enthusiast</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Khaled M. Qamhan | Software Engineering Student</title>
+    <meta name="description" content="Khaled M. Qamhan, third-year Software Engineering student at UMPSA and Babaker Scholarship recipient. Front-end, back-end, system design and applied AI. Open to training and internship opportunities.">
+    <meta name="theme-color" content="#0a0a0a">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Khaled M. Qamhan | Software Engineering Student">
+    <meta property="og:description" content="Third-year Software Engineering student building clean interfaces, solid system design and applied AI. Open to training and internship opportunities.">
+    <meta property="og:image" content="my-pic.jpeg">
+    <!-- TODO: add <meta property="og:url" content="https://YOUR-USERNAME.github.io/..."> once the final URL is known -->
+    <meta name="twitter:card" content="summary">
+
+    <!-- Apply saved theme before paint to avoid a flash -->
+    <script>
+        document.documentElement.classList.add('js');
+        try {
+            var t = localStorage.getItem('theme');
+            if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="is-preload">
-    <!-- Wrapper -->
-    <div id="wrapper" class="fade-in">
-        <!-- Intro -->
-        <div id="intro">
-            <h1>This is<br />Khaled Qamhan</h1>
-            <p>Software Engineering Student · Full-Stack Developer · AI Enthusiast<br />
-            Passionate about creating intelligent, user-friendly digital experiences</p>
-            <div class="intro-arrow">
-                <a href="#header" class="scrolly" id="intro-scroll-btn">
-                    <span>&#8595;</span>
-                </a>
-            </div>
-            <div class="continue-button" id="continue-button">
-                <a href="#header" class="button scrolly">Continue</a>
-            </div>
-        </div>
+<body class="is-loading">
 
-        <!-- Header -->
-        <header id="header">
-            <a href="#intro" class="logo">Khaled Qamhan</a>
-        </header>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-        <!-- Nav -->
-        <nav id="nav">
-            <ul class="links">
-                <li class="active"><a href="#header">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <ul class="icons">
-                <li><a href="https://www.linkedin.com/in/khaled-qamhan-8294462ab/" target="_blank">LinkedIn</a></li>
-                <li><a href="https://github.com/AbuMoath" target="_blank">GitHub</a></li>
-            </ul>
-        </nav>
-
-        <!-- Main -->
-        <div id="main">
-
-            <!-- Featured Post -->
-            <article class="post featured">
-                <header class="major">
-                    <span class="date">About Me</span>
-                    <h2><a href="#">Building Intelligent<br />Digital Experiences</a></h2>
-                    <p>I build intelligent, user-friendly digital experiences and enjoy turning ideas into functional systems. 
-                    As a Software Engineering student, I'm passionate about creating solutions that bridge the gap between 
-                    cutting-edge technology and practical user needs.</p>
-                </header>
-                <a href="#" class="image main"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&h=600&fit=crop" alt="Workspace" /></a>
-                <p>My journey in tech is driven by curiosity and a love for problem-solving. Whether it's designing 
-                intuitive interfaces, developing robust backend systems, or exploring AI possibilities, I approach 
-                every project with dedication and a commitment to excellence.</p>
-                <p>From front-end development with modern frameworks to back-end architecture and database design, 
-                I enjoy working across the full stack. My experience spans HTML5, CSS3, JavaScript, PHP, MySQL, Java, 
-                and emerging AI technologies, allowing me to bring comprehensive solutions to complex challenges.</p>
-            </article>
-
-            <!-- Posts -->
-            <section id="projects" class="posts">
-                <article>
-                    <header>
-                        <span class="date">Featured Project</span>
-                        <h2><a href="#">AI-Powered Analytics<br />Dashboard</a></h2>
-                    </header>
-                    <a href="#" class="image fit"><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop" alt="AI Dashboard" /></a>
-                    <p>A sophisticated dashboard leveraging machine learning algorithms to provide real-time insights and predictive analytics for business intelligence.</p>
-                    <ul class="actions special">
-                        <li><a href="#" class="button">View Project</a></li>
-                    </ul>
-                </article>
-                <article>
-                    <header>
-                        <span class="date">Featured Project</span>
-                        <h2><a href="#">Modern E-Commerce<br />Platform</a></h2>
-                    </header>
-                    <a href="#" class="image fit"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop" alt="E-Commerce" /></a>
-                    <p>Full-stack e-commerce solution with secure payment integration, inventory management, and an intuitive user experience optimized for conversions.</p>
-                    <ul class="actions special">
-                        <li><a href="#" class="button">View Project</a></li>
-                    </ul>
-                </article>
-                <article>
-                    <header>
-                        <span class="date">Featured Project</span>
-                        <h2><a href="#">Smart Task<br />Manager</a></h2>
-                    </header>
-                    <a href="#" class="image fit"><img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=400&fit=crop" alt="Task Manager" /></a>
-                    <p>Intelligent task management system with AI-powered priority suggestions, team collaboration features, and seamless cross-platform synchronization.</p>
-                    <ul class="actions special">
-                        <li><a href="#" class="button">View Project</a></li>
-                    </ul>
-                </article>
-                <article>
-                    <header>
-                        <span class="date">Skills</span>
-                        <h2><a href="#">Full-Stack<br />Development</a></h2>
-                    </header>
-                    <a href="#" class="image fit"><img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop" alt="Coding" /></a>
-                    <p>Proficient in HTML5, CSS3, JavaScript, PHP, MySQL, and Java. Experienced in building responsive web applications and robust backend systems.</p>
-                    <ul class="actions special">
-                        <li><a href="#skills" class="button">Learn More</a></li>
-                    </ul>
-                </article>
-                <article>
-                    <header>
-                        <span class="date">Skills</span>
-                        <h2><a href="#">UI/UX Design &<br />System Analysis</a></h2>
-                    </header>
-                    <a href="#" class="image fit"><img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop" alt="Design" /></a>
-                    <p>Creating intuitive user interfaces and conducting comprehensive system analysis to ensure optimal user experience and efficient system architecture.</p>
-                    <ul class="actions special">
-                        <li><a href="#skills" class="button">Learn More</a></li>
-                    </ul>
-                </article>
-                <article>
-                    <header>
-                        <span class="date">Skills</span>
-                        <h2><a href="#">AI & Machine<br />Learning</a></h2>
-                    </header>
-                    <a href="#" class="image fit"><img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop" alt="AI" /></a>
-                    <p>Exploring artificial intelligence and machine learning technologies to create intelligent solutions that enhance user experiences and solve complex problems.</p>
-                    <ul class="actions special">
-                        <li><a href="#skills" class="button">Learn More</a></li>
-                    </ul>
-                </article>
-            </section>
-
-        </div>
-
-        <!-- Footer -->
-        <footer id="footer">
-            <section class="split contact">
-                <section class="alt">
-                    <h3>Location</h3>
-                    <p><a href="https://www.visitsaudi.com/en/riyadh" target="_blank">Saudi Arabia / Riyadh</a></p>
-                </section>
-                <section>
-                    <h3>Phone</h3>
-                    <p><a href="tel:+966531406118">+966 53 140 6118</a></p>
-                </section>
-                <section>
-                    <h3>Email</h3>
-                    <p><a href="mailto:khaledqmhan@gmail.com">khaledqmhan@gmail.com</a></p>
-                </section>
-                <section>
-                    <h3>Social</h3>
-                    <ul class="icons alt">
-                        <li><a href="https://www.linkedin.com/in/khaled-qamhan-8294462ab/" target="_blank" ><span class="label">LinkedIn</span></a></li>
-                        <li><a href="https://github.com/AbuMoath" target="_blank" ><span class="label">GitHub</span></a></li>
-                    </ul>
-                </section>
-            </section>
-        </footer>
-
-        <!-- Copyright -->
-        <div id="copyright">
-            <ul><li>&copy; Khaled Qamhan 2025</li></ul>
-        </div>
-
+    <!-- Preloader -->
+    <div class="preloader" id="preloader" aria-hidden="true">
+        <div class="preloader__name" id="preloaderName">Khaled Qamhan</div>
+        <div class="preloader__meta"><span id="preloaderCount">0</span>%</div>
+        <div class="preloader__bar"><span id="preloaderBar"></span></div>
     </div>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
+    <!-- Scroll progress, grain, cursor -->
+    <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
 
+    <!-- Header -->
+    <header class="header" id="header">
+        <a href="#top" class="logo" aria-label="Khaled Qamhan, back to top">KQ<span>.</span></a>
+        <nav class="nav" id="nav" aria-label="Primary">
+            <a href="#about">About</a>
+            <a href="#education">Education</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#recognition">Recognition</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <div class="header__actions">
+            <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to light theme">
+                <svg class="icon icon--moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/></svg>
+                <svg class="icon icon--sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></g></svg>
+            </button>
+            <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+                <span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <!-- 1. HERO -->
+        <section class="hero" id="top" aria-labelledby="heroTitle">
+            <div class="hero__bg" aria-hidden="true">
+                <span class="blob blob--1"></span>
+                <span class="blob blob--2"></span>
+                <span class="blob blob--3"></span>
+                <span class="hero__grid"></span>
+            </div>
+            <div class="container hero__inner">
+                <p class="eyebrow hero__eyebrow" data-hero-fade><span class="dot"></span> Software Engineering Student &mdash; UMPSA</p>
+                <h1 class="hero__title" id="heroTitle" data-split aria-label="Khaled Qamhan">Khaled Qamhan</h1>
+                <p class="hero__lead" data-hero-fade>I design and build clean interfaces, structured systems and applied AI ideas, from the first requirements interview to the final line of SQL.</p>
+                <div class="hero__cta" data-hero-fade>
+                    <a href="#contact" class="btn btn--solid" data-magnetic><span>Contact me</span></a>
+                    <!-- TODO: add your CV file as cv.pdf (or change this href) -->
+                    <a href="cv.pdf" class="btn btn--ghost" data-magnetic download><span>Download CV</span></a>
+                    <a href="https://www.linkedin.com/in/khaled-m-qamhan-8294462ab" class="btn btn--link" target="_blank" rel="noopener">LinkedIn <i aria-hidden="true">&#8599;</i></a>
+                    <a href="https://github.com/AbuMoath" class="btn btn--link" target="_blank" rel="noopener">GitHub <i aria-hidden="true">&#8599;</i></a>
+                </div>
+            </div>
+            <a href="#about" class="hero__scroll" aria-label="Scroll to About"><span></span>Scroll</a>
+        </section>
+
+        <!-- 2. ABOUT -->
+        <section class="section" id="about" aria-labelledby="aboutTitle">
+            <div class="container about">
+                <div class="about__media" data-reveal>
+                    <div class="portrait" data-parallax="0.06">
+                        <img src="my-pic.jpeg" alt="Portrait of Khaled Qamhan" width="480" height="600" loading="lazy" decoding="async">
+                    </div>
+                    <p class="about__caption mono">Riyadh, Saudi Arabia</p>
+                </div>
+                <div class="about__body">
+                    <p class="section__label mono" data-reveal>01 / About</p>
+                    <h2 class="section__title" id="aboutTitle" data-reveal>Engineer in training, <em>curious</em> by default.</h2>
+                    <p class="status" data-reveal><span class="status__pulse"></span> Open to training and internship opportunities</p>
+                    <div class="prose" data-reveal>
+                        <p>I'm a Software Engineering student with growing experience in both front-end and back-end development, and a strong interest in applying Artificial Intelligence to real-world systems.</p>
+                        <p>I enjoy creating clean, user-friendly interfaces while also working with system logic, databases and structured design documentation. I'm actively learning AI to understand how intelligent systems can improve user experience, decision-making and automation.</p>
+                        <p>I'm always open to collaboration, new learning opportunities and meaningful projects.</p>
+                    </div>
+                    <dl class="stats" data-reveal data-stagger>
+                        <div><dt>Dean's List</dt><dd><span data-count="5">0</span></dd></div>
+                        <div><dt>Projects</dt><dd><span data-count="9">0</span></dd></div>
+                        <div><dt>Certifications</dt><dd><span data-count="9">0</span></dd></div>
+                        <div><dt>Gold medal</dt><dd><span data-count="1">0</span></dd></div>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. EDUCATION -->
+        <section class="section" id="education" aria-labelledby="eduTitle">
+            <div class="container">
+                <p class="section__label mono" data-reveal>02 / Education</p>
+                <h2 class="section__title" id="eduTitle" data-reveal>The path <em>so far</em>, and what's next.</h2>
+
+                <ol class="timeline" id="timeline">
+                    <span class="timeline__line" aria-hidden="true"><i id="timelineFill"></i></span>
+
+                    <li class="tl-item" data-reveal>
+                        <span class="tl-dot" aria-hidden="true"></span>
+                        <time class="tl-date mono">Apr 2008 &ndash; Mar 2020</time>
+                        <div class="card">
+                            <h3>Prince Bander bin Abdulaziz Secondary School</h3>
+                            <p class="muted">Associate's degree, Computer Software Engineering</p>
+                            <p>Grade: Excellent</p>
+                        </div>
+                    </li>
+
+                    <li class="tl-item" data-reveal>
+                        <span class="tl-dot" aria-hidden="true"></span>
+                        <time class="tl-date mono">Sep 2023 &ndash; Sep 2027</time>
+                        <div class="card">
+                            <h3>Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA)</h3>
+                            <p class="muted">Bachelor's degree, Computer Software Engineering &middot; Faculty of Computing</p>
+                            <p>Third-year student and Babaker Scholarship recipient. Named on the Dean's List for five consecutive semesters, from Semester I 2023/2024 to Semester I 2025/2026.</p>
+                        </div>
+                    </li>
+
+                    <li class="tl-item tl-item--next" data-reveal>
+                        <span class="tl-dot" aria-hidden="true"></span>
+                        <time class="tl-date mono"><!-- TODO: add training/internship dates -->Upcoming</time>
+                        <div class="card card--dashed">
+                            <h3>Industrial training (internship)</h3>
+                            <p class="muted">Next phase</p>
+                            <p>Looking for a placement where I can apply my full-stack, system design and AI skills in a real team.</p>
+                        </div>
+                    </li>
+
+                    <li class="tl-item tl-item--next" data-reveal>
+                        <span class="tl-dot" aria-hidden="true"></span>
+                        <time class="tl-date mono"><!-- TODO: add dissertation timeline/topic -->Upcoming</time>
+                        <div class="card card--dashed">
+                            <h3>Dissertation</h3>
+                            <p class="muted">Final-year project</p>
+                            <p>A research and build project to close the degree.</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 4. SKILLS -->
+        <section class="section" id="skills" aria-labelledby="skillsTitle">
+            <div class="container">
+                <p class="section__label mono" data-reveal>03 / Skills</p>
+                <h2 class="section__title" id="skillsTitle" data-reveal>Tools, methods and <em>habits</em>.</h2>
+            </div>
+
+            <div class="marquee" aria-hidden="true">
+                <div class="marquee__track">
+                    <span>Java</span><span>PHP</span><span>MySQL</span><span>JavaScript</span><span>HTML5</span><span>CSS</span><span>SQL</span><span>C</span><span>Figma</span><span>UML</span><span>ERD</span><span>MVC</span>
+                    <span>Java</span><span>PHP</span><span>MySQL</span><span>JavaScript</span><span>HTML5</span><span>CSS</span><span>SQL</span><span>C</span><span>Figma</span><span>UML</span><span>ERD</span><span>MVC</span>
+                </div>
+            </div>
+
+            <div class="container skills">
+                <article class="skill-group card" data-reveal>
+                    <h3>Languages</h3>
+                    <ul class="tags">
+                        <li>Java</li><li>PHP</li><li>JavaScript</li><li>HTML5</li><li>CSS</li><li>SQL</li><li>C</li>
+                    </ul>
+                </article>
+                <article class="skill-group card" data-reveal>
+                    <h3>Front-end &amp; HCI</h3>
+                    <ul class="tags">
+                        <li>UI/UX design</li><li>Figma prototyping</li><li>User research</li><li>Usability evaluation</li><li>Nielsen's heuristics</li><li>Accessibility design</li><li>User-centered design</li>
+                    </ul>
+                </article>
+                <article class="skill-group card" data-reveal>
+                    <h3>Back-end &amp; Data</h3>
+                    <ul class="tags">
+                        <li>MySQL</li><li>Database design</li><li>ERD &amp; EERD</li><li>Normalization</li><li>Data modeling</li><li>MVC</li>
+                    </ul>
+                </article>
+                <article class="skill-group card" data-reveal>
+                    <h3>Analysis &amp; Design</h3>
+                    <ul class="tags">
+                        <li>SRS</li><li>SDD / SAD</li><li>UML diagrams</li><li>Use case modeling</li><li>Sequence diagrams</li><li>Requirement elicitation</li><li>RAD methodology</li>
+                    </ul>
+                </article>
+                <article class="skill-group card" data-reveal>
+                    <h3>AI &amp; Automation</h3>
+                    <ul class="tags">
+                        <li>Generative AI</li><li>LLMs</li><li>Prompt engineering</li><li>AI literacy</li><li>Workflow automation</li><li>Data analysis</li>
+                    </ul>
+                </article>
+                <article class="skill-group card" data-reveal>
+                    <h3>Networking</h3>
+                    <ul class="tags">
+                        <li>CCNAv7: Intro to Networks</li><li>Cisco Packet Tracer</li><li>TCP/IP</li><li>Routing &amp; switching</li><li>IPv4/IPv6</li>
+                    </ul>
+                </article>
+                <article class="skill-group skill-group--wide card" data-reveal>
+                    <h3>Working style</h3>
+                    <ul class="tags">
+                        <li>Team collaboration</li><li>Communication</li><li>Creative problem solving</li><li>Time management</li><li>Presentation skills</li><li>Technical writing</li><li>Stakeholder communication</li><li>Project management</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- 5. PROJECTS -->
+        <section class="section" id="projects" aria-labelledby="projTitle">
+            <div class="container">
+                <p class="section__label mono" data-reveal>04 / Projects</p>
+                <h2 class="section__title" id="projTitle" data-reveal>Selected <em>work</em>.</h2>
+                <p class="section__intro" data-reveal>Academic projects covering requirements, design, databases and implementation. Source code and documents are on <a class="u-link" href="https://github.com/AbuMoath" target="_blank" rel="noopener">GitHub</a> where available.</p>
+
+                <div class="grid" id="projectGrid">
+                    <!-- TODO: add per-project links (repo, PDF, demo) by adding <a class="card__link"> inside any card -->
+                    <article class="project card card--glow" data-reveal>
+                        <span class="project__no mono">01</span>
+                        <h3>AuthenticityHub: Software Design Document</h3>
+                        <p class="project__meta mono">Software Design Workshop (BCS2343) &middot; 2025</p>
+                        <p>Design blueprint for a public inquiry platform for MCMC (Malaysian Communications and Multimedia Commission). MVC architecture across four modules (user management, inquiry submission, assignment to agencies, progress tracking) for public users, administrators and agencies, backed by an ERD and data dictionary. I led the four-person team as project leader.</p>
+                        <ul class="tags tags--sm"><li>SDD</li><li>MVC</li><li>ERD</li><li>UML</li></ul>
+                    </article>
+
+                    <article class="project card card--glow" data-reveal>
+                        <span class="project__no mono">02</span>
+                        <h3>AuthenticityHub: Software Requirements Specification</h3>
+                        <p class="project__meta mono">Software Design Workshop (BCS2343) &middot; 2025</p>
+                        <p>The Software Requirements Specification for the MCMC-focused public inquiry system, documenting what the platform must do for public users, administrators and agencies.</p>
+                        <ul class="tags tags--sm"><li>SRS</li><li>Requirements</li><li>Traceability</li></ul>
+                    </article>
+
+                    <article class="project card card--glow" data-reveal>
+                        <span class="project__no mono">03</span>
+                        <h3>Waterpark Management System</h3>
+                        <p class="project__meta mono">System Analysis &amp; Design (BCS1133)</p>
+                        <p>System analysis for moving a manual waterpark booking process online: real-time availability, time-slot reservations, e-tickets and towel and float rentals with invoicing. Built on RAD methodology and requirement-elicitation interviews with visitors.</p>
+                        <ul class="tags tags--sm"><li>System analysis</li><li>RAD</li><li>Elicitation</li></ul>
+                    </article>
+
+                    <article class="project card card--glow" data-reveal>
+                        <span class="project__no mono">04</span>
+                        <h3>Recycling Management System</h3>
+                        <p class="project__meta mono">Database Systems</p>
+                        <p>A complete database design covering ERD, normalization and SQL for managing recycling operations.</p>
+                        <ul class="tags tags--sm"><li>ERD</li><li>Normalization</li><li>SQL</li></ul>
+                    </article>
+
+                    <article class="project card card--glow" data-reveal>
+                        <span class="project__no mono">05</span>
+                        <h3>SwiftShip</h3>
+                        <p class="project__meta mono">Object-oriented programming</p>
+                        <p>A shipping system built in Java using OOP principles, with a graphical user interface.</p>
+                        <ul class="tags tags--sm"><li>Java</li><li>OOP</li><li>GUI</li></ul>
+                    </article>
+
+                    <article class="project card card--glow" data-reveal>
+                        <span class="project__no mono">06</span>
+                        <h3>Educational App for Children with Dyscalculia</h3>
+                        <p class="project__meta mono">Human-Computer Interaction</p>
+                        <p>An interactive educational application prototype designed for children with dyscalculia, applying user-centered design and usability principles.</p>
+                        <ul class="tags tags--sm"><li>HCI</li><li>Prototyping</li><li>Accessibility</li></ul>
+                    </article>
+
+                    <article class="project card card--glow project--compact" data-reveal>
+                        <span class="project__no mono">07</span>
+                        <h3>GrabNGo</h3>
+                        <p class="project__meta mono">Campus canteen pre-order &amp; pickup system</p>
+                        <!-- TODO: add description, role and tech -->
+                    </article>
+
+                    <article class="project card card--glow project--compact" data-reveal>
+                        <span class="project__no mono">08</span>
+                        <h3>Kiddify</h3>
+                        <p class="project__meta mono">Preschool learning system</p>
+                        <!-- TODO: add description, role and tech -->
+                    </article>
+
+                    <article class="project card card--glow project--compact" data-reveal>
+                        <span class="project__no mono">09</span>
+                        <h3>FKPark</h3>
+                        <p class="project__meta mono">QR-based smart parking management &middot; Mar&ndash;Jul 2024</p>
+                        <!-- TODO: add description, role and tech -->
+                    </article>
+                </div>
+                <!-- Also on LinkedIn: "Annual Carnival, Problem Solving Mini Project" (2023 - present). TODO: add details if you want it shown. -->
+            </div>
+        </section>
+
+        <!-- 6/7. RECOGNITION + CERTIFICATIONS (no work experience or volunteering on LinkedIn yet) -->
+        <section class="section" id="recognition" aria-labelledby="recTitle">
+            <div class="container">
+                <p class="section__label mono" data-reveal>05 / Recognition</p>
+                <h2 class="section__title" id="recTitle" data-reveal>Honors, awards &amp; <em>certifications</em>.</h2>
+
+                <div class="rec">
+                    <div class="rec__col" data-reveal>
+                        <h3 class="rec__h mono">Achievements</h3>
+                        <ul class="rows">
+                            <li><strong>Gold Medal</strong><span>16th Creation, Innovation, Technology &amp; Research Exposition (CITREX 2026). Team project: an Enterprise AI-SOC for industrial cybersecurity.</span></li>
+                            <li><strong>Babaker Scholarship</strong><span>Recipient</span></li>
+                            <li><strong>YEC</strong><span>UMPSA Faculty of Industrial Management</span></li>
+                            <li><strong>Dean's List</strong><span>Sem I 2025/2026 &middot; Sem II 2024/2025 &middot; Sem I 2024/2025 &middot; Sem II 2023/2024 &middot; Sem I 2023/2024</span></li>
+                        </ul>
+                    </div>
+                    <div class="rec__col" data-reveal>
+                        <h3 class="rec__h mono">Certifications</h3>
+                        <ul class="rows">
+                            <li><strong>EF SET English Certificate</strong><span>C2 Proficient, 83/100</span></li>
+                            <li><strong>IELTS Academic</strong><span>British Council</span></li>
+                            <li><strong>CCNAv7: Introduction to Networks</strong><span>Cisco</span></li>
+                            <li><strong>Google Prompting Essentials</strong><span>Google</span></li>
+                            <li><strong>Start Writing Prompts like a Pro</strong><span>Google</span></li>
+                            <li><strong>Design Prompts for Everyday Work Tasks</strong><span>Google</span></li>
+                            <li><strong>Speed Up Data Analysis and Presentation Building</strong><span>Google</span></li>
+                            <li><strong>Use AI as a Creative or Expert Partner</strong><span>Google</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. CONTACT -->
+        <section class="section section--contact" id="contact" aria-labelledby="contactTitle">
+            <div class="container contact">
+                <div>
+                    <p class="section__label mono" data-reveal>06 / Contact</p>
+                    <h2 class="section__title section__title--xl" id="contactTitle" data-reveal>Let's build<br><em>something</em> useful.</h2>
+                    <ul class="contact__list" data-reveal>
+                        <li><span class="mono">Email</span><a class="u-link" href="mailto:khaledqmhan@gmail.com">khaledqmhan@gmail.com</a></li>
+                        <li><span class="mono">Phone</span><a class="u-link" href="tel:+966531406118">+966 53 140 6118</a></li>
+                        <li><span class="mono">Location</span>Riyadh, Saudi Arabia</li>
+                        <li><span class="mono">Elsewhere</span>
+                            <a class="u-link" href="https://www.linkedin.com/in/khaled-m-qamhan-8294462ab" target="_blank" rel="noopener">LinkedIn</a>
+                            <a class="u-link" href="https://github.com/AbuMoath" target="_blank" rel="noopener">GitHub</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Static hosting has no server, so this opens the visitor's email app with the message prefilled -->
+                <form class="form" id="contactForm" data-reveal novalidate>
+                    <div class="field">
+                        <label for="fName">Name</label>
+                        <input id="fName" name="name" type="text" autocomplete="name" required>
+                    </div>
+                    <div class="field">
+                        <label for="fEmail">Email</label>
+                        <input id="fEmail" name="email" type="email" autocomplete="email" required>
+                    </div>
+                    <div class="field">
+                        <label for="fMsg">Message</label>
+                        <textarea id="fMsg" name="message" rows="5" required></textarea>
+                    </div>
+                    <p class="form__note" id="formNote" role="status" aria-live="polite"></p>
+                    <button type="submit" class="btn btn--solid" data-magnetic><span>Send message</span></button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__inner">
+            <p>&copy; <span id="year">2026</span> Khaled M. Qamhan</p>
+            <p class="mono">Designed &amp; built by hand</p>
+            <a href="#top" class="u-link" data-magnetic>Back to top &uarr;</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
