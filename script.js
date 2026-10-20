@@ -25,29 +25,52 @@
     themeBtn.addEventListener('click', function () {
         setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
         haptics.buzz(12);
-        sound.hum(260, 0.14, 0.035);
+        sound.tick(260, 0.14, 0.035);
     });
 
     $('#year').textContent = new Date().getFullYear();
 
-    /* ---------- Haptics (mobile vibration) ---------- */
-    var haptics = {
-        last: 0,
-        buzz: function (pattern) {
-            if (!('vibrate' in navigator)) return;
+    /* ---------- Haptics (mobile vibration) ----------
+       navigator.vibrate() only succeeds when called inside a trusted, discrete
+       user gesture (click/touchend/keyup) — browsers silently ignore it from
+       scroll handlers or IntersectionObserver callbacks, gesture or not. So
+       scroll-driven triggers call .queue() and the pattern actually fires on
+       the next touchend/click, which is the closest thing to "felt while
+       scrolling" that the platform allows. Click-driven triggers (buttons,
+       the menu, nav taps) call .buzz() directly since they're already inside
+       a valid gesture. iOS Safari has no Vibration API at all — this is a
+       platform limitation with no workaround, not a bug. */
+    var haptics = (function () {
+        var last = 0, pending = null;
+        var supported = 'vibrate' in navigator;
+        function fire(pattern) {
+            if (!supported) return;
             var now = performance.now();
-            if (now - this.last < 120) return; // avoid buzzing storms
-            this.last = now;
+            if (now - last < 120) return; // avoid buzzing storms
+            last = now;
             try { navigator.vibrate(pattern); } catch (e) {}
         }
-    };
+        function queue(pattern) { pending = pattern; }
+        function flush() { if (pending) { fire(pending); pending = null; } }
+        if (supported) {
+            ['touchend', 'pointerup', 'keyup'].forEach(function (evt) {
+                document.addEventListener(evt, flush, { passive: true });
+            });
+        }
+        return { buzz: fire, queue: queue };
+    })();
 
-    /* ---------- Ambient sound: short synthesized hums, no audio files ----------
+    /* ---------- Ambient sound: a continuous low hum, not music, no audio files ----------
        Off by default (autoplay-safe, and so nobody is surprised); the visitor
        opts in with the speaker button, which also doubles as the unlock gesture
-       the Web Audio API needs. */
+       the Web Audio API needs. Two slightly detuned sine oscillators through a
+       lowpass filter give a soft, consistent drone (like equipment idling, not
+       a tone or melody); a slow LFO breathes the filter cutoff so it never
+       feels static; scrolling nudges that same cutoff so the hum stays quietly
+       "alive" and connected to the page without ever becoming a jingle. Short
+       clicks (buttons, menu, nav taps) still get a soft confirmation tick. */
     var sound = (function () {
-        var ctx = null, enabled = false;
+        var ctx = null, enabled = false, drone = null;
         try { enabled = localStorage.getItem('sound') === 'on'; } catch (e) {}
         var btn = $('#soundToggle');
 
@@ -59,11 +82,15 @@
             return ctx;
         }
 
-        function hum(freq, duration, peak) {
+        function resume(c) {
+            if (c.state === 'suspended') { var rp = c.resume(); if (rp && rp.catch) rp.catch(function () {}); }
+        }
+
+        function tick(freq, duration, peak) {
             if (!enabled) return;
             var c = ensureCtx();
             if (!c) return;
-            if (c.state === 'suspended') c.resume();
+            resume(c);
             var t0 = c.currentTime;
             var osc = c.createOscillator();
             var filter = c.createBiquadFilter();
@@ -80,22 +107,88 @@
             osc.stop(t0 + duration + 0.03);
         }
 
+        function startDrone() {
+            var c = ensureCtx();
+            if (!c || drone) return;
+            resume(c);
+            var now = c.currentTime;
+            var osc1 = c.createOscillator();
+            var osc2 = c.createOscillator();
+            var lfo = c.createOscillator();
+            var lfoGain = c.createGain();
+            var filter = c.createBiquadFilter();
+            var master = c.createGain();
+
+            // Phone/laptop speakers reproduce sub-100Hz very poorly at low gain, so the
+            // fundamental sits around 145Hz (still a warm, low "hum" register, just one
+            // that small speakers can actually move air at).
+            osc1.type = 'sine'; osc1.frequency.setValueAtTime(145, now);
+            osc2.type = 'sine'; osc2.frequency.setValueAtTime(145 * 1.006, now); // slight detune: a soft beating, not a pitch
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(520, now);
+            filter.Q.setValueAtTime(0.6, now);
+
+            lfo.type = 'sine'; lfo.frequency.setValueAtTime(0.055, now); // ~18s slow breath
+            lfoGain.gain.setValueAtTime(90, now);
+            lfo.connect(lfoGain); lfoGain.connect(filter.frequency);
+
+            master.gain.setValueAtTime(0.0001, now);
+            master.gain.linearRampToValueAtTime(0.04, now + 2.2); // slow, gentle fade in — present, never loud
+
+            osc1.connect(filter); osc2.connect(filter); filter.connect(master); master.connect(c.destination);
+            osc1.start(now); osc2.start(now); lfo.start(now);
+
+            drone = { osc1: osc1, osc2: osc2, lfo: lfo, filter: filter, master: master };
+        }
+
+        function stopDrone() {
+            if (!drone || !ctx) return;
+            var now = ctx.currentTime;
+            var d = drone;
+            drone = null;
+            try {
+                d.master.gain.cancelScheduledValues(now);
+                d.master.gain.setValueAtTime(d.master.gain.value, now);
+                d.master.gain.linearRampToValueAtTime(0.0001, now + 0.6);
+            } catch (e) {}
+            setTimeout(function () {
+                try { d.osc1.stop(); d.osc2.stop(); d.lfo.stop(); } catch (e) {}
+            }, 700);
+        }
+
+        function setBrightness(p) {
+            if (!drone || !ctx) return;
+            var target = 420 + Math.max(0, Math.min(1, p)) * 320; // 420Hz..740Hz, a subtle shift
+            try { drone.filter.frequency.linearRampToValueAtTime(target, ctx.currentTime + 0.5); } catch (e) {}
+        }
+
         function setEnabled(on) {
             enabled = on;
             try { localStorage.setItem('sound', on ? 'on' : 'off'); } catch (e) {}
             if (btn) {
-                btn.setAttribute('data-sound', on ? 'on' : 'off');
+                btn.classList.toggle('is-on', on);
                 btn.setAttribute('aria-pressed', on ? 'true' : 'false');
                 btn.setAttribute('aria-label', on ? 'Turn sound off' : 'Turn sound on');
             }
-            if (on) { ensureCtx(); hum(240, 0.18, 0.05); }
+            if (on) { startDrone(); tick(300, 0.16, 0.09); } else { stopDrone(); }
         }
         if (btn) {
             setEnabled(enabled);
-            btn.addEventListener('click', function () { setEnabled(!enabled); haptics.buzz(12); });
+            // iOS Safari's audio unlock is strictest about the very first gesture on a
+            // page; resuming on both touchend and click covers tap and click-emulation
+            // paths so the very first toggle reliably unlocks sound on iPhone.
+            ['click', 'touchend'].forEach(function (evt) {
+                btn.addEventListener(evt, function (e) {
+                    if (evt === 'touchend') e.preventDefault();
+                    var c = ensureCtx();
+                    if (c && c.state === 'suspended') { var rp = c.resume(); if (rp && rp.catch) rp.catch(function () {}); }
+                    setEnabled(!enabled);
+                    haptics.buzz(12);
+                });
+            });
         }
 
-        return { hum: hum };
+        return { tick: tick, setBrightness: setBrightness };
     })();
 
     /* ---------- Split text into masked words ---------- */
@@ -133,23 +226,23 @@
         if (started) return; started = true;
         preloader.classList.add('is-done');
         body.classList.remove('is-loading');
-        setTimeout(function () { hero.classList.add('is-in'); }, reduceMotion ? 0 : 450);
-        setTimeout(function () { preloader.style.display = 'none'; }, 1300);
+        setTimeout(function () { hero.classList.add('is-in'); }, reduceMotion ? 0 : 150);
+        setTimeout(function () { preloader.style.display = 'none'; }, 900);
     }
 
     (function runPreloader() {
         if (reduceMotion) { startSite(); return; }
-        var duration = 1600, t0 = null;
+        var duration = 1000, t0 = null;
         function tick(ts) {
             if (t0 === null) t0 = ts;
             var p = Math.min((ts - t0) / duration, 1);
             var eased = 1 - Math.pow(1 - p, 3);
             countEl.textContent = Math.round(eased * 100);
             barEl.style.transform = 'scaleX(' + eased + ')';
-            if (p < 1) requestAnimationFrame(tick); else setTimeout(startSite, 250);
+            if (p < 1) requestAnimationFrame(tick); else setTimeout(startSite, 120);
         }
         requestAnimationFrame(tick);
-        setTimeout(startSite, 4000); // safety net
+        setTimeout(startSite, 2800); // safety net
     })();
 
     /* ---------- Scroll reveals + stagger + counters ---------- */
@@ -180,7 +273,7 @@
                 io.unobserve(e.target);
                 any = true;
             });
-            if (any) { haptics.buzz(8); sound.hum(130, 0.14, 0.022); }
+            if (any) { haptics.queue(8); }
         }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
         $$('[data-reveal]').forEach(function (el) { io.observe(el); });
     } else {
@@ -203,10 +296,13 @@
         var progress = max > 0 ? y / max : 0;
         progressBar.style.transform = 'scaleX(' + progress + ')';
 
-        // iOS-style "tick" each quarter of the page, like a progress wheel detent
+        // The ambient hum's tone drifts with scroll position, so it stays quietly "alive"
+        sound.setBrightness(progress);
+
+        // iOS-style haptic "detent" each quarter of the page
         var q = Math.min(Math.floor(progress * 4), 4);
         if (q !== lastQuartile) {
-            if (q > 0) { haptics.buzz(q === 4 ? [14, 40, 14] : 14); sound.hum(150 + q * 35, 0.12, 0.028); }
+            if (q > 0) haptics.queue(q === 4 ? [14, 40, 14] : 14);
             lastQuartile = q;
         }
 
@@ -258,8 +354,7 @@
                 });
                 if (currentSection !== e.target.id) {
                     currentSection = e.target.id;
-                    haptics.buzz(10);
-                    sound.hum(205, 0.11, 0.024);
+                    haptics.queue(10);
                 }
             });
         }, { rootMargin: '-45% 0px -50% 0px' });
@@ -276,7 +371,7 @@
         menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
         body.style.overflow = open ? 'hidden' : '';
         haptics.buzz(open ? [12, 30, 12] : 12);
-        sound.hum(open ? 320 : 180, 0.14, 0.03);
+        sound.tick(open ? 320 : 180, 0.14, 0.03);
     }
     menuBtn.addEventListener('click', function () { setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'); });
     navLinks.forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
@@ -332,7 +427,7 @@
         var el = e.target.closest && e.target.closest('.btn, .nav a, .u-link');
         if (!el || el.id === 'menuBtn' || el === themeBtn || el.id === 'soundToggle') return;
         haptics.buzz(10);
-        sound.hum(225, 0.1, 0.03);
+        sound.tick(225, 0.1, 0.03);
     });
 
     /* ---------- Contact form (static site: opens the visitor's mail app) ---------- */
